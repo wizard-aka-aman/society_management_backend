@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
+using Society_Management_System.Model.Dto_s;
 
 namespace Society_Management_System.Model.ComplaintsRepo
 {
@@ -10,12 +11,22 @@ namespace Society_Management_System.Model.ComplaintsRepo
         {
             _societyContext = societyContext;
         }
-        public async Task<Complaints> AddComplaints(Complaints complaints)
+        public async Task<Complaints> AddComplaints(ComplaintsDto complaints)
         {
-            complaints.DateCreated = DateTime.Now;
-            _societyContext.Complaints.Add(complaints);
+            Flats flat = _societyContext.Flats.Include(e => e.Users).FirstOrDefault(e => e.Users.Name == complaints.Name);
+
+            Complaints complaints1 = new Complaints
+            {
+                DateCreated = DateTime.Now,
+                Description = complaints.Description,
+                Title = complaints.Title,
+                Status = "Pending",
+                DateResolved = null,
+                Flats = flat
+            };
+            _societyContext.Complaints.Add(complaints1);
             await _societyContext.SaveChangesAsync();
-            return complaints;
+            return complaints1;
 
 
         }
@@ -33,7 +44,7 @@ namespace Society_Management_System.Model.ComplaintsRepo
 
 
 
-        public async Task<Complaints> UpdateComplaints(Complaints complaints, int id)
+        public async Task<Complaints> UpdateComplaints(ComplaintsDto complaints, int id)
         {
             Complaints complaints1 = _societyContext.Complaints.Find(id);
             complaints1.Status = complaints.Status;

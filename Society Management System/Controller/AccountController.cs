@@ -1,4 +1,5 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Text; 
 using Microsoft.AspNetCore.Identity;
@@ -251,14 +252,56 @@ namespace Society_Management_System.Controllers
             return Json("User Logout");
         }
 
-        [HttpGet("getallusers")]
-        public async Task<List<string>> getallusers()
+        [HttpGet("getallusers/{id}")]
+        public async Task<IActionResult> getallusers(int id)
         {
 
-            var items = await _userManager.Users.Select(e => e.UserName ).ToListAsync();
-            return items;
+            //var items = await _userManager.Users.Select(e => e.UserName ).ToListAsync();
+            var items = await _societyContext.Users.Where(e => e.SocietyId == id).Select(x => new { x.Name,x.Email, x.Role }).ToListAsync();
+            return Ok(items);
+        }
+        [HttpGet("getallunassignedusers/{id}")]
+        public async Task<IActionResult> getallunassignedusers(int id)
+        {
+
+            //var items = await _userManager.Users.Select(e => e.UserName ).ToListAsync();
+            List<string> users = await _societyContext.Users.Where(e => e.Role != "SuperAdmin" && e.SocietyId == id).Select(s => s.Name).ToListAsync();
+            List<string> flats= await _societyContext.Flats.Include(e => e.Users).Select(e => e.Users.Name).ToListAsync();
+            List<string> unassignedUsers = new List<string>();
+            for (int i = 0; i < users.Count; i++)
+            {
+                
+
+                var user = flats.Contains(users[i]);
+                    if(!user)
+                unassignedUsers.Add(users[i]); 
+            }
+            return Ok(unassignedUsers);
         }
 
+        [HttpDelete("DeleteUser/{name}")]
+        public async Task<bool> DeleteUser(string name)
+        {
+            var usernameExist = await _userManager.FindByNameAsync(name); 
+            if (usernameExist == null)
+            {
+                return false;
+            }
+            await _userManager.DeleteAsync(usernameExist);
+            await _societyContext.SaveChangesAsync();
+
+
+            Users user = _societyContext.Users.FirstOrDefault(e => e.Name == name);
+            if (user != null) { 
+            _societyContext.Users.Remove(user);
+            }
+            else
+            {
+                return false;
+            }
+            await _societyContext.SaveChangesAsync();
+            return true;
+        }
 
     }
 }

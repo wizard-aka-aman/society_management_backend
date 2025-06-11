@@ -39,10 +39,17 @@ namespace Society_Management_System.Controllers
  
 
         [HttpPut("UpdateFlats/{id}")]
-        public async Task<IActionResult> UpdateFlats([FromBody] Flats flat, int id)
+        public async Task<IActionResult> UpdateFlats([FromBody] FlatsDto flat, int id)
         {
             var complaint = await _flatsRepository.UpdateFlats(flat, id);
             return Ok(complaint);
+        }
+
+        [HttpDelete("DeleteFlats/{id}")]
+        public async Task<IActionResult> DeleteFlats(int id)
+        {
+            var Flat =await _flatsRepository.DeleteFlats(id);
+            return Ok(Flat);
         }
     }
 }

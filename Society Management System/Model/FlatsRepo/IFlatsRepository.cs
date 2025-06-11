@@ -8,6 +8,7 @@ namespace Society_Management_System.Model.FlatsRepo
 
         Task<bool> AddFlats(FlatsDto flats);
 
-        Task<Flats> UpdateFlats(Flats flats, int id);
+        Task<bool> UpdateFlats(FlatsDto flats, int id);
+        Task<bool> DeleteFlats(int id);
     }
 }

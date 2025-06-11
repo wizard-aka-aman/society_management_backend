@@ -10,7 +10,6 @@ namespace Society_Management_System.Model
         public int Amount { get; set; }
         public DateTime DueDate { get; set; }
         public DateTime? GeneratedDate { get; set; }
-
         public bool IsPaid { get; set; }
         public DateTime? PaidDate { get; set; }
         

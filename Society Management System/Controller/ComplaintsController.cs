@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Society_Management_System.Model;
 using Society_Management_System.Model.ComplaintsRepo;
+using Society_Management_System.Model.Dto_s;
 
 namespace Society_Management_System.Controllers
 {
@@ -37,14 +38,14 @@ namespace Society_Management_System.Controllers
         }
 
         [HttpPost("AddComplaints")]
-        public async Task<IActionResult> AddComplaints([FromBody] Complaints complaints )
+        public async Task<IActionResult> AddComplaints([FromBody] ComplaintsDto complaints )
         {
              var complaint = await _complaintsRepository.AddComplaints(complaints);
             return Ok(complaint);
         }
 
         [HttpPut("UpdateComplaints/{id}")]
-        public async Task<IActionResult> UpdateComplaints([FromBody] Complaints complaints , int id)
+        public async Task<IActionResult> UpdateComplaints([FromBody] ComplaintsDto complaints , int id)
         {
             var complaint = await _complaintsRepository.UpdateComplaints(complaints , id);
             return Ok(complaint);

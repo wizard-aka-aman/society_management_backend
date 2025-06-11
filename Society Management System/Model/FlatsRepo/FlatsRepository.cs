@@ -35,21 +35,51 @@ namespace Society_Management_System.Model.FlatsRepo
             return true;
         }
 
+        public async Task<bool> DeleteFlats(int id)
+        {
+            Flats flats1 = _societyContext.Flats.Find(id);
+            if (flats1 == null) {
+                return false;
+            }
+            var item = _societyContext.Flats.Remove(flats1);
+            if (item == null) {
+                return false;
+            }
+            await _societyContext.SaveChangesAsync();
+            return true;
+        }
+
         public List<Flats> GetAllFlats(int id)
         {
             return _societyContext.Flats.Include(e => e.Users).Where(e => e.SocietyId == id).ToList();
         }
 
-        public async Task<Flats> UpdateFlats(Flats flats, int id)
+        public async Task<bool> UpdateFlats(FlatsDto flats, int id)
         {
-            Flats flats1 = _societyContext.Flats.Find(id);
-            flats1.Users.Name = flats.Users.Name;
-            flats1.Users.Email = flats.Users.Email;
-            flats1.Users.Role = flats.Users.Role;
+            Users user = _societyContext.Users.FirstOrDefault(e=> e.Name == flats.Name);
+            Flats flats1 = await _societyContext.Flats.Include(e => e.Users).FirstOrDefaultAsync(f => f.FlatsId == id);
+
+            var flatNumberFound = _societyContext.Flats.FirstOrDefault(e => e.FlatNumber == flats.FlatNumber && e.FlatsId != id);
+            if (flatNumberFound != null)
+            {
+                return false;
+            }
+
+            if (user == null)
+            {
+                flats1.Users = null; // <-- Make sure Flats entity has this property 
+            }
+            else
+            {
+                flats1.Users = user;
+            }
+            flats1.Block = flats.Block;
+            flats1.FlatNumber = flats.FlatNumber;
+            flats1.FloorNumber = flats.FloorNumber;
 
             _societyContext.Flats.Update(flats1);
             await _societyContext.SaveChangesAsync();
-            return flats1;
+            return true;
         }
     }
 }
