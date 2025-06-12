@@ -282,26 +282,36 @@ namespace Society_Management_System.Controllers
         [HttpDelete("DeleteUser/{name}")]
         public async Task<bool> DeleteUser(string name)
         {
-            var usernameExist = await _userManager.FindByNameAsync(name); 
-            if (usernameExist == null)
+            // Find the user by name
+            var user = await _societyContext.Users.FirstOrDefaultAsync(e => e.Name == name);
+            if (user == null)
             {
                 return false;
             }
-            await _userManager.DeleteAsync(usernameExist);
-            await _societyContext.SaveChangesAsync();
 
+            // Check for foreign key dependency (assuming Flats table references Users by UserId)
+            bool isReferencedInFlats = await _societyContext.Flats.Include(e => e.Users).AnyAsync(f => f.Users!=null && f.Users.UsersId == user.UsersId);
+            if (isReferencedInFlats)
+            {
+                // User cannot be deleted due to foreign key constraints
+                return false;
+            }
 
-            Users user = _societyContext.Users.FirstOrDefault(e => e.Name == name);
-            if (user != null) { 
+            // Remove the user from Users table
             _societyContext.Users.Remove(user);
-            }
-            else
-            {
-                return false;
-            }
             await _societyContext.SaveChangesAsync();
+
+            // Also remove from Identity (UserManager)
+            var identityUser = await _userManager.FindByNameAsync(name);
+            if (identityUser != null)
+            {
+                await _userManager.DeleteAsync(identityUser);
+                await _societyContext.SaveChangesAsync();
+            }
+
             return true;
         }
+
 
     }
 }

@@ -50,5 +50,11 @@ namespace Society_Management_System.Controllers
             var complaint = await _complaintsRepository.UpdateComplaints(complaints , id);
             return Ok(complaint);
         }
+        [HttpDelete("DeleteComplaints/{id}")]
+        public async Task<IActionResult> DeleteComplaints(int id)
+        {
+            var complaints = _complaintsRepository.DeleteComplaints(id);
+            return Ok(complaints);
+        }
     }
 }

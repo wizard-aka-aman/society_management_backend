@@ -6,6 +6,8 @@ using Microsoft.IdentityModel.Tokens;
 using Society_Management_System.Model;
 using Society_Management_System.Model.ComplaintsRepo;
 using Society_Management_System.Model.FlatsRepo;
+using Society_Management_System.Model.BillsRepo;
+using Society_Management_System.Model.NoticesRepo;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +34,8 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 
 builder.Services.AddScoped<IComplaintsRepository , ComplaintsRepository>();
 builder.Services.AddScoped<IFlatsRepository , FlatsRepository>();
+builder.Services.AddScoped<IBillsRepository , BillsRepository>();
+builder.Services.AddScoped<INoticesReopsitory , NoticesRepository>();
 
 
 //SignalR
@@ -44,6 +48,7 @@ builder.Services.AddAuthentication(options =>
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+    
 }).AddJwtBearer(options =>
 {
     options.RequireHttpsMetadata = false;

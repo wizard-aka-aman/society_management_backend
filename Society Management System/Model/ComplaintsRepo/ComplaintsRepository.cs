@@ -31,10 +31,23 @@ namespace Society_Management_System.Model.ComplaintsRepo
 
         }
 
+        public async Task<bool> DeleteComplaints(int id)
+        {
+            Complaints complaints = await _societyContext.Complaints.FirstOrDefaultAsync(e => e.ComplaintsId == id);
+
+            if (complaints == null)
+            {
+                return false;
+            }
+            _societyContext.Complaints.Remove(complaints);
+            await _societyContext.SaveChangesAsync();
+            return true;
+        }
+
         public List<Complaints> GetAllComplaints(int id)
         {
 
-            return _societyContext.Complaints.Include(e => e.Flats).Where(e => e.Flats.SocietyId == id).ToList();
+            return _societyContext.Complaints.Include(e => e.Flats).ThenInclude(e => e.Users).Where(e => e.Flats.SocietyId == id).ToList();
         }
 
         public List<Complaints> GetMyComplaints(string name)
@@ -48,6 +61,10 @@ namespace Society_Management_System.Model.ComplaintsRepo
         {
             Complaints complaints1 = _societyContext.Complaints.Find(id);
             complaints1.Status = complaints.Status;
+            if(complaints1.Status == "Completed")
+            {
+                complaints1.DateResolved = DateTime.Now;
+            }
             _societyContext.Complaints.Update(complaints1);
             await _societyContext.SaveChangesAsync();
             return complaints1;

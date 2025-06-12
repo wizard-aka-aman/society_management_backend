@@ -11,6 +11,8 @@ namespace Society_Management_System.Model.ComplaintsRepo
 
         Task<Complaints> UpdateComplaints(ComplaintsDto complaints , int id);
 
+        Task<bool> DeleteComplaints(int id);
+
 
 
     }

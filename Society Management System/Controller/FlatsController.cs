@@ -33,7 +33,7 @@ namespace Society_Management_System.Controllers
         [HttpGet("GetAllFlats/{id}")]
         public async Task<IActionResult> GetAllFlats(int id)
         {
-            var complaints = _flatsRepository.GetAllFlats(id);
+            var complaints =await _flatsRepository.GetAllFlats(id);
             return Ok(complaints);
         }
  

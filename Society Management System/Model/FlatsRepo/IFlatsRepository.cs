@@ -4,7 +4,7 @@ namespace Society_Management_System.Model.FlatsRepo
 {
     public interface IFlatsRepository
     { 
-        List<Flats> GetAllFlats(int id);
+        Task<List<Flats>> GetAllFlats(int id);
 
         Task<bool> AddFlats(FlatsDto flats);
 
