@@ -34,6 +34,13 @@ namespace Society_Management_System.Controllers
             var complaints =  await _noticesReopsitory.GetAllNotices(id);
             return Ok(complaints);
         }
+        
+        [HttpGet("GetOneNotice/{id}")]
+        public async Task<IActionResult> GetOneNotice(int id)
+        {
+            var complaints =  await _noticesReopsitory.GetOneNotice(id);
+            return Ok(complaints);
+        }
 
 
         [HttpPut("UpdateNotices/{id}")]

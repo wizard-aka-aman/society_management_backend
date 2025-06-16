@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Society_Management_System.Model;
 
@@ -11,9 +12,11 @@ using Society_Management_System.Model;
 namespace Society_Management_System.Migrations
 {
     [DbContext(typeof(SocietyContext))]
-    partial class SocietyContextModelSnapshot : ModelSnapshot
+    [Migration("20250612120542_Added Table Visitors")]
+    partial class AddedTableVisitors
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -285,9 +288,6 @@ namespace Society_Management_System.Migrations
                     b.Property<int>("FlatsId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Reason")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("datetime2");
 
@@ -318,9 +318,6 @@ namespace Society_Management_System.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FeedBack")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("FlatsId")
@@ -427,38 +424,6 @@ namespace Society_Management_System.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Society_Management_System.Model.Visitors", b =>
-                {
-                    b.Property<int>("VisitorsId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VisitorsId"));
-
-                    b.Property<int?>("FlatsId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Purpose")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("SocietyId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("VisitDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("VisitorsId");
-
-                    b.HasIndex("FlatsId");
-
-                    b.ToTable("Visitors");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -550,15 +515,6 @@ namespace Society_Management_System.Migrations
                         .HasForeignKey("UsersId");
 
                     b.Navigation("Users");
-                });
-
-            modelBuilder.Entity("Society_Management_System.Model.Visitors", b =>
-                {
-                    b.HasOne("Society_Management_System.Model.Flats", "Flats")
-                        .WithMany()
-                        .HasForeignKey("FlatsId");
-
-                    b.Navigation("Flats");
                 });
 #pragma warning restore 612, 618
         }

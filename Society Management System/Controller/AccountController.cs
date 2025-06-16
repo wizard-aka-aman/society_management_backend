@@ -312,6 +312,17 @@ namespace Society_Management_System.Controllers
             return true;
         }
 
+        [HttpGet("GetUserDetail/{name}")]
+        public  IActionResult GetUserDetail(string name)
+        {
+            var user = _societyContext.Users.Where(e => e.Name == name);
+            if (user != null) { 
+            var flat = _societyContext.Flats.Include(e => e.Users).Where(e => e.Users != null && e.Users.Name == name);
+            return Ok(new {  flat ,user });
+            }
+            return Ok(user);
+        }
+
 
     }
 }

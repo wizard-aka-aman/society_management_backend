@@ -8,6 +8,11 @@ using Society_Management_System.Model.ComplaintsRepo;
 using Society_Management_System.Model.FlatsRepo;
 using Society_Management_System.Model.BillsRepo;
 using Society_Management_System.Model.NoticesRepo;
+using Society_Management_System.Model.BookingsRepo;
+using Society_Management_System.Model.VisitorsRepo;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore;
+using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,6 +41,8 @@ builder.Services.AddScoped<IComplaintsRepository , ComplaintsRepository>();
 builder.Services.AddScoped<IFlatsRepository , FlatsRepository>();
 builder.Services.AddScoped<IBillsRepository , BillsRepository>();
 builder.Services.AddScoped<INoticesReopsitory , NoticesRepository>();
+builder.Services.AddScoped<IBookingRepository , BookingRepository>();
+builder.Services.AddScoped<IVisitorsRepository , VisitorsRepository>();
 
 
 //SignalR
@@ -68,6 +75,12 @@ builder.Services.AddAuthentication(options =>
 });
 builder.Services.AddAuthentication();
 
+//payment (Stripe)  
+StripeConfiguration.ApiKey = "sk_test_tR3PYbcVNZZ796tH88S4VQ2u";
+
+
+
+
 //builder.Services.AddMemoryCache();
 
 // Add CORS policy with chat
@@ -87,7 +100,7 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 // Enable CORS
-app.UseCors("AllowAll");    
+app.UseCors("AllowAll"); 
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -101,5 +114,8 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+app.UseRouting();
+app.UseStaticFiles();
+app.UseEndpoints(endpoints => endpoints.MapControllers());
 
 app.Run();

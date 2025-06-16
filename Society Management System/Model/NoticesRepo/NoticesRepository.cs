@@ -40,7 +40,11 @@ namespace Society_Management_System.Model.NoticesRepo
 
         public async Task<List<Notices>> GetAllNotices(int id)
         {
-            return await _societyContext.Notices.Where(e => e.SocietyId == id).ToListAsync();
+            return await _societyContext.Notices.Where(e => e.SocietyId == id).OrderByDescending(e => e.CreatedAt).ToListAsync();
+        }
+        public async Task<List<Notices>> GetOneNotice(int id)
+        {
+            return await _societyContext.Notices.Where(e => e.SocietyId == id).OrderByDescending(e => e.CreatedAt).Take(2).ToListAsync();
         }
 
         public async Task<bool> UpdateNotices(NoticesDto Notices, int id)

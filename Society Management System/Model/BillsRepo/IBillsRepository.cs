@@ -11,6 +11,7 @@ namespace Society_Management_System.Model.BillsRepo
         Task<bool> AddBill(BillsDto bills);
 
         Task<bool> UpdateBill(BillsDto bills , int id);
+        Task<bool> PayBill( int id);
 
         Task<bool> DeleteBill(int id);
     }

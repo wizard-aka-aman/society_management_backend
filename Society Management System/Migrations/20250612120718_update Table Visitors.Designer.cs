@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Society_Management_System.Model;
 
@@ -11,9 +12,11 @@ using Society_Management_System.Model;
 namespace Society_Management_System.Migrations
 {
     [DbContext(typeof(SocietyContext))]
-    partial class SocietyContextModelSnapshot : ModelSnapshot
+    [Migration("20250612120718_update Table Visitors")]
+    partial class updateTableVisitors
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -285,9 +288,6 @@ namespace Society_Management_System.Migrations
                     b.Property<int>("FlatsId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Reason")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("datetime2");
 
@@ -318,9 +318,6 @@ namespace Society_Management_System.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FeedBack")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("FlatsId")
@@ -445,9 +442,6 @@ namespace Society_Management_System.Migrations
                     b.Property<string>("Purpose")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("SocietyId")
-                        .HasColumnType("int");
 
                     b.Property<DateTime>("VisitDateTime")
                         .HasColumnType("datetime2");

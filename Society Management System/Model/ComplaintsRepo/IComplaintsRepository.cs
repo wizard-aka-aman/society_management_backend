@@ -13,6 +13,11 @@ namespace Society_Management_System.Model.ComplaintsRepo
 
         Task<bool> DeleteComplaints(int id);
 
+        Task<int> TotalComplaints(int id);
+        Task<int> TotalCompletedComplaints(int id);
+        Task<int> MyComplaintsNumber(string name);
+        Task<int> MyCompletedComplaintsNumber(string name);
+
 
 
     }

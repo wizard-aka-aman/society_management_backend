@@ -53,7 +53,32 @@ namespace Society_Management_System.Controllers
         [HttpDelete("DeleteComplaints/{id}")]
         public async Task<IActionResult> DeleteComplaints(int id)
         {
-            var complaints = _complaintsRepository.DeleteComplaints(id);
+            var complaints = await _complaintsRepository.DeleteComplaints(id);
+            return Ok(complaints);
+        }
+
+        [HttpGet("MyComplaintsNumber/{name}")]
+        public async Task<IActionResult> MyComplaintsNumber(string name)
+        {
+            var complaints = await _complaintsRepository.MyComplaintsNumber(name);
+            return Ok(complaints);
+        }
+        [HttpGet("TotalComplaints/{id}")]
+        public async Task<IActionResult> TotalComplaints(int id)
+        {
+            var complaints = await _complaintsRepository.TotalComplaints(id);
+            return Ok(complaints);
+        }
+        [HttpGet("TotalCompletedComplaints/{id}")]
+        public async Task<IActionResult> TotalCompletedComplaints(int id)
+        {
+            var complaints = await _complaintsRepository.TotalCompletedComplaints(id);
+            return Ok(complaints);
+        }
+        [HttpGet("MyCompletedComplaintsNumber/{name}")]
+        public async Task<IActionResult> MyCompletedComplaintsNumber(string name)
+        {
+            var complaints = await _complaintsRepository.MyCompletedComplaintsNumber(name);
             return Ok(complaints);
         }
     }

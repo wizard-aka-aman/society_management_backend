@@ -5,6 +5,7 @@ namespace Society_Management_System.Model.NoticesRepo
     public interface INoticesReopsitory
     {
         Task<List<Notices>> GetAllNotices(int id);
+        Task<List<Notices>> GetOneNotice(int id);
 
         Task<bool> AddNotices(NoticesDto Notices);
 

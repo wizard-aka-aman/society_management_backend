@@ -22,6 +22,7 @@ namespace Society_Management_System.Model
         public DbSet<Complaints> Complaints { get; set; }
         public DbSet<Bookings> Bookings { get; set; }
         public DbSet<Notices> Notices { get; set; }
+        public DbSet<Visitors> Visitors { get; set; }
 
     }
 }

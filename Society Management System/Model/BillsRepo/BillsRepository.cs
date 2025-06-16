@@ -12,7 +12,7 @@ namespace Society_Management_System.Model.BillsRepo
         }
         public async Task<bool> AddBill(BillsDto bills)
         {
-            Flats flat =await _societyContext.Flats.Include(e =>e.Users).FirstOrDefaultAsync(e => e.FlatNumber == bills.FlatNumber);
+            Flats flat =await _societyContext.Flats.Include(e =>e.Users).Include(e => e.Users).FirstOrDefaultAsync(e => e.Users.Name == bills.Name);
 
             if (flat == null)
             {
@@ -46,30 +46,47 @@ namespace Society_Management_System.Model.BillsRepo
 
         public async Task<List<Bills>> GetAllBills(int id)
         {
-            var allBills = await _societyContext.Bills.Include(e => e.Flats).ThenInclude(e => e.Users).Where(e => e.Flats.SocietyId == id).ToListAsync();
+            var allBills = await _societyContext.Bills.Include(e => e.Flats).ThenInclude(e => e.Users).Where(e => e.Flats.SocietyId == id).OrderByDescending(e => e.GeneratedDate).ToListAsync();
             return allBills;
         }
 
         public async Task<List<Bills>> GetMyBills(string name)
         {
             var myBills = await _societyContext.Bills.Include(e => e.Flats).ThenInclude(e => e.Users)
-                .Where(e => e.Flats.Users != null && e.Flats.Users.Name == name).ToListAsync();
+                .Where(e => e.Flats.Users != null && e.Flats.Users.Name == name).OrderByDescending(e => e.GeneratedDate).ToListAsync();
             return myBills;
         }
 
         public async Task<bool> UpdateBill(BillsDto bills , int id)
         {
             var bill = await _societyContext.Bills.Include(e => e.Flats).FirstOrDefaultAsync(e => e.BillsId == id);
+            Flats flat = await _societyContext.Flats.Include(e => e.Users).Include(e => e.Users).FirstOrDefaultAsync(e => e.Users.Name == bills.Name);
             if (bill == null)
             {
                 return false;
             }
-            bill.Flats.FlatNumber = bills.FlatNumber;
+            bill.Flats = flat;
             bill.DueDate = bills.DueDate;
             bill.Amount = bills.Amount;
             bill.Type = bills.Type;
 
               _societyContext.Update(bill);
+
+            await _societyContext.SaveChangesAsync();
+            return true;
+        }
+        public async Task<bool> PayBill( int id)
+        {
+            var bill = await _societyContext.Bills.Include(e => e.Flats).FirstOrDefaultAsync(e => e.BillsId == id);
+            
+            if (bill == null)
+            {
+                return false;
+            } 
+            bill.IsPaid = true;
+            bill.PaidDate = DateTime.Now; 
+
+            _societyContext.Update(bill);
 
             await _societyContext.SaveChangesAsync();
             return true;

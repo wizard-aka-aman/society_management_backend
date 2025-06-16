@@ -50,5 +50,12 @@ namespace Society_Management_System.Controllers
             var bill1 = await _billsRepository.UpdateBill(bill ,id);
             return Ok(bill1);
         }
+        
+        [HttpGet("PayBill/{id}")]
+        public async Task<IActionResult> PayBill( int id)
+        {
+            var bill1 = await _billsRepository.PayBill(id);
+            return Ok(bill1);
+        }
     }
 }

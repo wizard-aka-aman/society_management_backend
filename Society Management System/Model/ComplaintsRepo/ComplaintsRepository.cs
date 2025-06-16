@@ -47,13 +47,29 @@ namespace Society_Management_System.Model.ComplaintsRepo
         public List<Complaints> GetAllComplaints(int id)
         {
 
-            return _societyContext.Complaints.Include(e => e.Flats).ThenInclude(e => e.Users).Where(e => e.Flats.SocietyId == id).ToList();
+            return _societyContext.Complaints.Include(e => e.Flats).ThenInclude(e => e.Users).Where(e => e.Flats.SocietyId == id).OrderByDescending(e => e.DateCreated).ToList();
         }
 
         public List<Complaints> GetMyComplaints(string name)
         {
-            return _societyContext.Complaints.Include(e => e.Flats).ThenInclude(e => e.Users).Where(e => e.Flats.Users.Name == name).ToList();
+            return _societyContext.Complaints.Include(e => e.Flats).ThenInclude(e => e.Users).Where(e => e.Flats.Users.Name == name).OrderByDescending(e => e.DateCreated).ToList();
         }
+ 
+
+        public async Task<int> TotalComplaints(int id)
+        {
+            var total  = await _societyContext.Complaints.Include(e => e.Flats).Where(e => e.Flats.SocietyId == id).ToListAsync();
+            var final = total.Where(e => e.Status != "Completed").Count();
+            return final; 
+        } 
+        public async Task<int> TotalCompletedComplaints(int id)
+        {
+            var total  = await _societyContext.Complaints.Include(e => e.Flats).Where(e => e.Flats.SocietyId == id).ToListAsync();
+            var final = total.Where(e => e.Status == "Completed").Count();
+            return final; 
+        }
+         
+
 
 
 
@@ -64,6 +80,7 @@ namespace Society_Management_System.Model.ComplaintsRepo
             if(complaints1.Status == "Completed")
             {
                 complaints1.DateResolved = DateTime.Now;
+                complaints1.FeedBack = complaints.FeedBack;
             }
             _societyContext.Complaints.Update(complaints1);
             await _societyContext.SaveChangesAsync();
@@ -71,5 +88,20 @@ namespace Society_Management_System.Model.ComplaintsRepo
 
 
         }
+
+        public async Task<int> MyComplaintsNumber(string name)
+        {
+           var total = await _societyContext.Complaints.Include(e => e.Flats).ThenInclude(e => e.Users).Where(e => e.Flats.Users.Name == name).ToListAsync();
+            var final = total.Where(e => e.Status != "Completed").Count();
+            return final;
+        }
+        public async Task<int> MyCompletedComplaintsNumber(string name)
+        {
+           var total = await _societyContext.Complaints.Include(e => e.Flats).ThenInclude(e => e.Users).Where(e => e.Flats.Users.Name == name).ToListAsync();
+            var final = total.Where(e => e.Status == "Completed").Count();
+            return final;
+        } 
+         
+         
     }
 }

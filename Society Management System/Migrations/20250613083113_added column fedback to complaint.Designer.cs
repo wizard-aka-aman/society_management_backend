@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Society_Management_System.Model;
 
@@ -11,9 +12,11 @@ using Society_Management_System.Model;
 namespace Society_Management_System.Migrations
 {
     [DbContext(typeof(SocietyContext))]
-    partial class SocietyContextModelSnapshot : ModelSnapshot
+    [Migration("20250613083113_added column fedback to complaint")]
+    partial class addedcolumnfedbacktocomplaint
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -284,9 +287,6 @@ namespace Society_Management_System.Migrations
 
                     b.Property<int>("FlatsId")
                         .HasColumnType("int");
-
-                    b.Property<string>("Reason")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("datetime2");

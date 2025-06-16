@@ -51,7 +51,7 @@ namespace Society_Management_System.Model.FlatsRepo
 
         public async Task<List<Flats>> GetAllFlats(int id)
         {
-            return await _societyContext.Flats.Include(e => e.Users).Where(e => e.SocietyId == id).ToListAsync();
+            return await _societyContext.Flats.Include(e => e.Users).Where(e => e.SocietyId == id).OrderBy(e => e.FlatNumber).ToListAsync();
         }
 
         public async Task<bool> UpdateFlats(FlatsDto flats, int id)
