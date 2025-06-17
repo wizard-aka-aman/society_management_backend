@@ -57,7 +57,7 @@ namespace Society_Management_System.Controllers
 
             };
             var url = new SessionService().Create(options).Url;
-            return Ok(new { url =url});
+            return Ok(new { url =url , details = options });
         }
     }
 }

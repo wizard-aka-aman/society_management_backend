@@ -118,7 +118,7 @@ namespace Society_Management_System.Controllers
                         Email = registerModel.Email,
                         Name = registerModel.UserName,
                         Role = "User",
-                        SocietyId = 1
+                        SocietyId = registerModel.SocietyId,
                         
                     };
                     _societyContext.Users.Add(User);
@@ -174,7 +174,7 @@ namespace Society_Management_System.Controllers
                         Email = registerModel.Email,
                         Name = registerModel.UserName,
                         Role = "Admin",
-                         SocietyId = 1
+                         SocietyId =registerModel.SocietyId,
                     };
                     _societyContext.Users.Add(User);
                     await _societyContext.SaveChangesAsync();
@@ -308,6 +308,15 @@ namespace Society_Management_System.Controllers
                 await _userManager.DeleteAsync(identityUser);
                 await _societyContext.SaveChangesAsync();
             }
+            List<Users> users = _societyContext.Users.Where(e => e.Role == "Admin" && e.SocietyId == user.SocietyId).ToList();
+            if(users.Count != 0)
+            {
+                Society society =await _societyContext.Society.FirstOrDefaultAsync(e => e.SocietyId == users[0].SocietyId);
+                society.Admin = users[0].Name;
+                _societyContext.Society.Update(society);
+                await _societyContext.SaveChangesAsync();
+            }
+
 
             return true;
         }
@@ -323,6 +332,35 @@ namespace Society_Management_System.Controllers
             return Ok(user);
         }
 
+        [HttpGet("GetUsernameWithNull")]
+        public IActionResult GetUsernameWithNull()
+        {
+            var user = _societyContext.Users.Where(e => e.SocietyId == null && e.Role == "Admin");
+            
+            return Ok(user);
+        }
+        [HttpGet("GetAllAdmin")]
+        public IActionResult GetAllAdmin()
+        {
+            var user = _societyContext.Users.Where(e => e.Role == "Admin");
+
+            return Ok(user);
+        }
+        [HttpGet("GetSocietyDetail/{id}")]
+        public IActionResult GetSocietyDetail(int id)
+        {
+            var society = _societyContext.Society.Where(e => e.SocietyId == id);
+
+            return Ok(society);
+        }
+
+        [HttpGet("GetAllAdminOfSociety/{id}")]
+        public IActionResult GetAllAdminOfSociety(int id)
+        {
+            var user = _societyContext.Users.Where(e => e.Role == "Admin" && e.SocietyId == id);
+
+            return Ok(user);
+        }
 
     }
 }

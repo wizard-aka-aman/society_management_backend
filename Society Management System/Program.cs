@@ -13,6 +13,7 @@ using Society_Management_System.Model.VisitorsRepo;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore;
 using Stripe;
+using Society_Management_System.Model.SocietyRepo;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -43,6 +44,7 @@ builder.Services.AddScoped<IBillsRepository , BillsRepository>();
 builder.Services.AddScoped<INoticesReopsitory , NoticesRepository>();
 builder.Services.AddScoped<IBookingRepository , BookingRepository>();
 builder.Services.AddScoped<IVisitorsRepository , VisitorsRepository>();
+builder.Services.AddScoped<ISocietyRepository , SocietyRepository>();
 
 
 //SignalR
