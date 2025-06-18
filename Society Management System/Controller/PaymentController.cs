@@ -4,6 +4,7 @@ using Stripe.Checkout;
 using Microsoft.Extensions.Options;
 using System.Diagnostics;
 using Society_Management_System.Model.Dto_s;
+using Society_Management_System.Model.BillsRepo;
 
 namespace Society_Management_System.Controllers
 {
@@ -11,21 +12,31 @@ namespace Society_Management_System.Controllers
     [ApiController]
     public class PaymentController : Controller
     {
+        private readonly IBillsRepository _billsRepository;
+       public PaymentController(IBillsRepository  billsRepository)
+        {
+              _billsRepository = billsRepository;
+        }
+
         [HttpPost("CreateCheckout")]
-       public IActionResult CreateCheckout(PaymentDto paymentdto)
+        public IActionResult CreateCheckout(PaymentDto paymentdto)
         {
             var currency = "INR";
-            var successUrl = "http://localhost:4200/success?billId="+paymentdto.billId;
+            var successUrl = "http://localhost:4200/success?session_id={CHECKOUT_SESSION_ID}";
             var cancleUrl = "http://localhost:4200/cancel";
 
             StripeConfiguration.ApiKey = "sk_test_tR3PYbcVNZZ796tH88S4VQ2u";
             var options = new SessionCreateOptions
             {
+                Metadata = new Dictionary<string, string>
+                  {
+                     { "billId", paymentdto.billId.ToString() }
+                  },
                 PaymentMethodTypes = new List<string>
                 {
-                    "card"
+                    "card",
                 },
-            LineItems = new List<SessionLineItemOptions>
+                LineItems = new List<SessionLineItemOptions>
             {
                 new SessionLineItemOptions
                 {
@@ -57,7 +68,27 @@ namespace Society_Management_System.Controllers
 
             };
             var url = new SessionService().Create(options).Url;
-            return Ok(new { url =url , details = options });
+            return Ok(new { url = url, details = options });
         }
+
+        [HttpGet("verify-payment")]
+        public async Task<IActionResult> VerifyPayment([FromQuery] string sessionId)
+        {
+            var service = new SessionService();
+            var session = await service.GetAsync(sessionId);
+
+            if (session.PaymentStatus == "paid")
+            {
+                var billId = session.Metadata["billId"];
+
+                // Call internal API or service
+                await _billsRepository.PayBill(int.Parse(billId));
+
+                return Ok(new { message = "Payment successful and bill processed." });
+            }
+
+            return BadRequest(new { message = "Payment not verified or incomplete." });
+        }
+
     }
 }
