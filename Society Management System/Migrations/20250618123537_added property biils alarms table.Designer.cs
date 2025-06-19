@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Society_Management_System.Model;
 
@@ -11,9 +12,11 @@ using Society_Management_System.Model;
 namespace Society_Management_System.Migrations
 {
     [DbContext(typeof(SocietyContext))]
-    partial class SocietyContextModelSnapshot : ModelSnapshot
+    [Migration("20250618123537_added property biils alarms table")]
+    partial class addedpropertybiilsalarmstable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

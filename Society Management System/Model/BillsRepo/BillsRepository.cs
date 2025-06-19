@@ -10,13 +10,13 @@ namespace Society_Management_System.Model.BillsRepo
         {
             _societyContext = societyContext;
         }
-        public async Task<bool> AddBill(BillsDto bills)
+        public async Task<Bills> AddBill(BillsDto bills)
         {
             Flats flat =await _societyContext.Flats.Include(e =>e.Users).Include(e => e.Users).FirstOrDefaultAsync(e => e.Users.Name == bills.Name);
 
             if (flat == null)
             {
-                return false;
+                return null;
             }
             Bills bill = new Bills
             {
@@ -29,7 +29,7 @@ namespace Society_Management_System.Model.BillsRepo
             };
             _societyContext.Bills.Add(bill);
             await _societyContext.SaveChangesAsync();
-            return true;
+            return bill;
         }
 
         public async Task<bool> DeleteBill(int id)

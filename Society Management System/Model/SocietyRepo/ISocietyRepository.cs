@@ -12,5 +12,7 @@ namespace Society_Management_System.Model.SocietyRepo
 
         Task<bool> AddSociety(SocietyDto societyDto);
         Task<bool> changeSocietyName(SocietyDto dto, int id);
+        Task<bool> changeSocietyNotifyBefore(SocietyDto dto, int id);
+        Task<Society> GetSocietyDetail(int id);
     }
 }

@@ -5,5 +5,6 @@
        
         public string Name { get; set; } 
         public string? Admin { get; set; }
+        public int? NotifyBefore { get; set; } = 1;
     }
 }

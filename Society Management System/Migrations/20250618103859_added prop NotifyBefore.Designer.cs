@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Society_Management_System.Model;
 
@@ -11,9 +12,11 @@ using Society_Management_System.Model;
 namespace Society_Management_System.Migrations
 {
     [DbContext(typeof(SocietyContext))]
-    partial class SocietyContextModelSnapshot : ModelSnapshot
+    [Migration("20250618103859_added prop NotifyBefore")]
+    partial class addedpropNotifyBefore
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -218,31 +221,6 @@ namespace Society_Management_System.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
-                });
-
-            modelBuilder.Entity("Society_Management_System.Model.Alarms", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("BillsId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Jobid")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BillsId");
-
-                    b.ToTable("Alarms");
                 });
 
             modelBuilder.Entity("Society_Management_System.Model.Bills", b =>
@@ -559,17 +537,6 @@ namespace Society_Management_System.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Society_Management_System.Model.Alarms", b =>
-                {
-                    b.HasOne("Society_Management_System.Model.Bills", "Bills")
-                        .WithMany()
-                        .HasForeignKey("BillsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Bills");
                 });
 
             modelBuilder.Entity("Society_Management_System.Model.Bills", b =>

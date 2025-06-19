@@ -5,6 +5,9 @@ using Microsoft.Extensions.Options;
 using System.Diagnostics;
 using Society_Management_System.Model.Dto_s;
 using Society_Management_System.Model.BillsRepo;
+using Hangfire;
+using Society_Management_System.Model;
+using Microsoft.EntityFrameworkCore;
 
 namespace Society_Management_System.Controllers
 {
@@ -13,9 +16,13 @@ namespace Society_Management_System.Controllers
     public class PaymentController : Controller
     {
         private readonly IBillsRepository _billsRepository;
-       public PaymentController(IBillsRepository  billsRepository)
+
+        private readonly SocietyContext _societyContext;
+
+        public PaymentController(IBillsRepository billsRepository, SocietyContext societyContext)
         {
-              _billsRepository = billsRepository;
+            _billsRepository = billsRepository;
+            _societyContext = societyContext;
         }
 
         [HttpPost("CreateCheckout")]
@@ -83,7 +90,15 @@ namespace Society_Management_System.Controllers
 
                 // Call internal API or service
                 await _billsRepository.PayBill(int.Parse(billId));
-
+                Alarms alarm = await _societyContext.Alarms.Include(e=>e.Bills).FirstOrDefaultAsync(e => e.Bills.BillsId == Convert.ToInt32(billId));
+                if (alarm == null)
+                {
+                    return NotFound();
+                }
+                BackgroundJob.Delete(alarm.Jobid.ToString());
+                var allAlarm = _societyContext.Alarms.Where(e => e.Jobid == alarm.Jobid).ToList();
+                _societyContext.Alarms.RemoveRange(allAlarm);
+                await _societyContext.SaveChangesAsync(); 
                 return Ok(new { message = "Payment successful and bill processed." });
             }
 

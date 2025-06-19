@@ -32,6 +32,12 @@ namespace Society_Management_System.Controllers
             var society = await _societyRepository.GetAll();
             return Ok(society);
         } 
+        [HttpGet("GetSocietyDetail/{id}")]
+        public async Task<IActionResult> GetSocietyDetail(int id)
+        {
+            var society = await _societyRepository.GetSocietyDetail(id);
+            return Ok(society);
+        } 
 
         [HttpPut("UpdateSociety/{id}")]
         public async Task<IActionResult> UpdateSociety([FromBody] SocietyDto dto, int id)
@@ -43,6 +49,12 @@ namespace Society_Management_System.Controllers
         public async Task<IActionResult> changeSocietyName([FromBody] SocietyDto dto, int id)
         {
             var society = await _societyRepository.changeSocietyName(dto, id);
+            return Ok(society);
+        } 
+        [HttpPut("changeSocietyNotifyBefore/{id}")]
+        public async Task<IActionResult> changeSocietyNotifyBefore([FromBody] SocietyDto dto, int id)
+        {
+            var society = await _societyRepository.changeSocietyNotifyBefore(dto, id);
             return Ok(society);
         }
 

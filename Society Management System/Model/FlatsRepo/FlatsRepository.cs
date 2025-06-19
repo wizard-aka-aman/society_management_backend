@@ -15,7 +15,7 @@ namespace Society_Management_System.Model.FlatsRepo
         {
             Users user = _societyContext.Users.FirstOrDefault(e=> e.Name == flats.Name);
 
-            var flatNumberFound = _societyContext.Flats.FirstOrDefault(e => e.FlatNumber == flats.FlatNumber);
+            var flatNumberFound = _societyContext.Flats.FirstOrDefault(e => e.FlatNumber == flats.FlatNumber && e.SocietyId == flats.SocietyId);
             if(flatNumberFound != null)
             {
                 return false;
@@ -59,7 +59,7 @@ namespace Society_Management_System.Model.FlatsRepo
             Users user = _societyContext.Users.FirstOrDefault(e=> e.Name == flats.Name);
             Flats flats1 = await _societyContext.Flats.Include(e => e.Users).FirstOrDefaultAsync(f => f.FlatsId == id);
 
-            var flatNumberFound = _societyContext.Flats.FirstOrDefault(e => e.FlatNumber == flats.FlatNumber && e.FlatsId != id);
+            var flatNumberFound = _societyContext.Flats.FirstOrDefault(e => e.FlatNumber == flats.FlatNumber && e.FlatsId != id && e.SocietyId == flats.SocietyId);
             if (flatNumberFound != null)
             {
                 return false;

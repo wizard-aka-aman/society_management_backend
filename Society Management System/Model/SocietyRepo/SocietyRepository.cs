@@ -79,6 +79,24 @@ namespace Society_Management_System.Model.SocietyRepo
             await _societyContext.SaveChangesAsync();
             return true;
 
+        }  
+        public async Task<bool> changeSocietyNotifyBefore(SocietyDto dto , int id)
+        {
+            Society society =  await _societyContext.Society.FirstOrDefaultAsync(e => e.SocietyId == id);
+            if(society == null)
+            {
+                return false;
+            }
+
+            society.NotifyBefore = dto.NotifyBefore ?? 1;
+            _societyContext.Society.Update(society);
+            await _societyContext.SaveChangesAsync();
+            return true;
+
+        }
+        public async Task<Society> GetSocietyDetail(int id)
+        {
+            return await  _societyContext.Society.FirstOrDefaultAsync(e => e.SocietyId == id);
         }
     }
 }

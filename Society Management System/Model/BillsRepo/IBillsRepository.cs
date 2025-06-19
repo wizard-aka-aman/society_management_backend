@@ -8,7 +8,7 @@ namespace Society_Management_System.Model.BillsRepo
 
         Task<List<Bills>> GetMyBills(string name);
 
-        Task<bool> AddBill(BillsDto bills);
+        Task<Bills> AddBill(BillsDto bills);
 
         Task<bool> UpdateBill(BillsDto bills , int id);
         Task<bool> PayBill( int id);

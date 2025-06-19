@@ -24,6 +24,7 @@ namespace Society_Management_System.Model
         public DbSet<Notices> Notices { get; set; }
         public DbSet<Visitors> Visitors { get; set; }
         public DbSet<Society> Society { get; set; }
+        public DbSet<Alarms> Alarms { get; set; }
 
     }
 }

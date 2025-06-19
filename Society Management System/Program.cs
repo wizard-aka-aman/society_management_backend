@@ -14,6 +14,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore;
 using Stripe;
 using Society_Management_System.Model.SocietyRepo;
+using Society_Management_System.Services.EmailService;
+using Hangfire;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,6 +47,18 @@ builder.Services.AddScoped<INoticesReopsitory , NoticesRepository>();
 builder.Services.AddScoped<IBookingRepository , BookingRepository>();
 builder.Services.AddScoped<IVisitorsRepository , VisitorsRepository>();
 builder.Services.AddScoped<ISocietyRepository , SocietyRepository>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+
+//hangfire
+
+builder.Services.AddHangfire((sp, config) =>
+{
+    var connectionStringHangFire = sp.GetRequiredService<IConfiguration>().GetConnectionString("SocietyConnection");
+    config.UseSqlServerStorage(connectionStringHangFire);
+
+});
+
+builder.Services.AddHangfireServer();
 
 
 //SignalR
@@ -119,5 +133,7 @@ app.MapControllers();
 app.UseRouting();
 app.UseStaticFiles();
 app.UseEndpoints(endpoints => endpoints.MapControllers());
+app.UseHangfireDashboard();
+app.UseHangfireServer();
 
 app.Run();
