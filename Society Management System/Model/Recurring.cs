@@ -4,7 +4,7 @@
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public int Reccuring { get; set; }
+        public string ReccuringId { get; set; }
         public Bills? Bills { get; set; }
     }
 }

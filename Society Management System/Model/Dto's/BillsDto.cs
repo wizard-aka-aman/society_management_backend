@@ -7,6 +7,7 @@
 
         public DateTime DueDate { get; set; }
         public string Name { get; set; }
+        public int? NotifyBefore { get; set; }
 
     }
 }

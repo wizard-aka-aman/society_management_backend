@@ -1,23 +1,32 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Society_Management_System.Model.Dto_s;
+using Society_Management_System.Model.JobRepo;
+using Society_Management_System.Services.EmailService;
 
 namespace Society_Management_System.Model.BillsRepo
 {
     public class BillsRepository : IBillsRepository
     {
         private readonly SocietyContext _societyContext;
-        public BillsRepository(SocietyContext societyContext)
+        private readonly IEmailService _emailService;
+        private readonly IJobRepository _jobRepository;
+
+         
+        public BillsRepository(SocietyContext societyContext, IEmailService emailService, IJobRepository jobRepository)
         {
             _societyContext = societyContext;
+            _emailService = emailService;
+            _jobRepository = jobRepository;
         }
         public async Task<Bills> AddBill(BillsDto bills)
         {
-            Flats flat =await _societyContext.Flats.Include(e =>e.Users).Include(e => e.Users).FirstOrDefaultAsync(e => e.Users.Name == bills.Name);
+            Flats flat = await _societyContext.Flats.Include(e => e.Users).Include(e => e.Users).FirstOrDefaultAsync(e => e.Users.Name == bills.Name);
 
             if (flat == null)
             {
                 return null;
             }
+            
             Bills bill = new Bills
             {
                 Amount = bills.Amount,
@@ -29,6 +38,29 @@ namespace Society_Management_System.Model.BillsRepo
             };
             _societyContext.Bills.Add(bill);
             await _societyContext.SaveChangesAsync();
+            EmailDto emailDto = new EmailDto
+            {
+                Amount = bills.Amount,
+                DueDate = bills.DueDate.ToString(),
+                Name = bills.Name,
+                Type = bills.Type,
+                Email = flat.Users.Email
+            };
+
+            _emailService.JobSendEmail(emailDto);
+            EmailItemDto emailItemDto = new EmailItemDto
+            {
+                Amount = bills.Amount,
+                BillId = bill.BillsId,
+                DueDate = bills.DueDate.ToString(),
+                Email = emailDto.Email,
+                Name = bills.Name,
+                Type = bills.Type,
+                NotifyBefore = bills.NotifyBefore??1
+
+            };
+
+           await _jobRepository.CreateScheduleJob(emailItemDto);
             return bill;
         }
 
@@ -57,7 +89,7 @@ namespace Society_Management_System.Model.BillsRepo
             return myBills;
         }
 
-        public async Task<bool> UpdateBill(BillsDto bills , int id)
+        public async Task<bool> UpdateBill(BillsDto bills, int id)
         {
             var bill = await _societyContext.Bills.Include(e => e.Flats).FirstOrDefaultAsync(e => e.BillsId == id);
             Flats flat = await _societyContext.Flats.Include(e => e.Users).Include(e => e.Users).FirstOrDefaultAsync(e => e.Users.Name == bills.Name);
@@ -70,21 +102,21 @@ namespace Society_Management_System.Model.BillsRepo
             bill.Amount = bills.Amount;
             bill.Type = bills.Type;
 
-              _societyContext.Update(bill);
+            _societyContext.Update(bill);
 
             await _societyContext.SaveChangesAsync();
             return true;
         }
-        public async Task<bool> PayBill( int id)
+        public async Task<bool> PayBill(int id)
         {
             var bill = await _societyContext.Bills.Include(e => e.Flats).FirstOrDefaultAsync(e => e.BillsId == id);
-            
+
             if (bill == null)
             {
                 return false;
-            } 
+            }
             bill.IsPaid = true;
-            bill.PaidDate = DateTime.Now; 
+            bill.PaidDate = DateTime.Now;
 
             _societyContext.Update(bill);
 

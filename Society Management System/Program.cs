@@ -16,6 +16,7 @@ using Stripe;
 using Society_Management_System.Model.SocietyRepo;
 using Society_Management_System.Services.EmailService;
 using Hangfire;
+using Society_Management_System.Model.JobRepo;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,6 +49,8 @@ builder.Services.AddScoped<IBookingRepository , BookingRepository>();
 builder.Services.AddScoped<IVisitorsRepository , VisitorsRepository>();
 builder.Services.AddScoped<ISocietyRepository , SocietyRepository>();
 builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IJobRepository, JobRepository>();
+
 
 //hangfire
 
